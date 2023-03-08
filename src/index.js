@@ -8,45 +8,74 @@ const OPTIONS_FOR_RESPONSE =
 
 const formEl = document.querySelector('.search-form');
 const galleryEl = document.querySelector('.gallery');
-console.log();
+const btnLoadMore = document.querySelector('[data-action="load-more"]');
+
+let valueForSearch = '';
+let page = 0;
 
 formEl.addEventListener('submit', onSubmit);
+btnLoadMore.addEventListener('click', onLoadMore);
 
 async function onSubmit(event) {
   event.preventDefault();
-  // const valueForSearch = formEl.elements.searchQuery.value;
-  galleryEl.insertAdjacentHTML('beforeend', renderMarkup(await getPics()));
-  // renderMarkup();
-  // getPics();
+  try {
+    if (formEl.elements.searchQuery.value === '') {
+      Notiflix.Notify.failure('Enter something to search');
+      return;
+    }
+
+    btnLoadMore.classList.add('hidden');
+    btnLoadMore.classList.add('btn');
+
+    galleryEl.innerHTML = '';
+
+    page = 0;
+
+    await insertMarkup();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-async function getPics() {
+async function onLoadMore() {
+  insertMarkup();
+}
+
+async function getPics(itemToSearch) {
   try {
-    const valueForSearch = formEl.elements.searchQuery.value.trim();
+    page += 1;
     const response = await axios.get(
-      `${BASE_URL}?key=${MY_KEY}&q=${valueForSearch}&${OPTIONS_FOR_RESPONSE}`
+      `${BASE_URL}?key=${MY_KEY}&q=${itemToSearch}&${OPTIONS_FOR_RESPONSE}&page=${page}&per_page=40`
     );
 
     const picsArray = await response.data.hits;
     const picsArrayLength = await response.data.hits.length;
-    if (picsArrayLength === 0) {
+
+    if (picsArrayLength === 0 || itemToSearch === '') {
       throw new Error();
     }
 
-    console.log(response);
+    console.log(response.data.total);
     console.log(picsArrayLength);
     console.log(picsArray);
+    Notiflix.Notify.success(`Hooray! We found ${response.data.total} images.`);
     return picsArray;
   } catch (error) {
-    formEl.elements.searchQuery.value = '';
-
-    Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
+    itemToSearch = '';
+    onErrorNotify();
   }
 }
 
+function onErrorNotify() {
+  Notiflix.Notify.failure(
+    'Sorry, there are no images matching your search query. Please try again.'
+  );
+}
+
 function renderMarkup(arr) {
+  if (arr === undefined) {
+    return;
+  }
   const markup = arr
     .map(
       ({
@@ -59,7 +88,7 @@ function renderMarkup(arr) {
         downloads,
       }) =>
         `<div class="photo-card">
-        <a><img src="${webformatURL}" alt="${tags}" loading="lazy" class='img'/></a>
+        <a class="link-slider"><img src="${webformatURL}" alt="${tags}" loading="lazy" class='img'/></a>
         <div class="info">
           <p class="info-item">
             <b>Likes<br>${likes}</br></b>
@@ -80,4 +109,13 @@ function renderMarkup(arr) {
   return markup;
 }
 
-getPics().then(x => renderMarkup(x));
+async function insertMarkup() {
+  valueForSearch = formEl.elements.searchQuery.value;
+
+  galleryEl.insertAdjacentHTML(
+    'beforeend',
+    renderMarkup(await getPics(valueForSearch))
+  );
+
+  btnLoadMore.classList.remove('hidden');
+}

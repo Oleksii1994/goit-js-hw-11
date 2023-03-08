@@ -23,6 +23,7 @@ body {
   border-radius: 2px;
   /* border: 0px; */
   color: white;
+  height: 30px;
 }
 
 .btn:hover {
@@ -39,6 +40,13 @@ body {
 }
 
 .img {
+  box-sizing: content-box;
+  object-fit: cover;
+  width: 380px;
+  height: 252px;
+}
+
+.link-slider {
   width: 380px;
   height: 252px;
 }
@@ -51,8 +59,19 @@ body {
   gap: 30px;
   width: 24vw;
   height: auto;
+  box-shadow: #009fff4a;
 }
+
 b {
   display: flex;
   text-align: center;
+}
+
+.btn-load-container {
+  display: flex;
+  justify-content: center;
+}
+
+.hidden {
+  display: none;
 }
