@@ -75,10 +75,13 @@ b {
 }
 
 .btn-load-container {
-  padding-bottom: 28px;
   display: flex;
   justify-content: center;
   background-color: antiquewhite;
+}
+
+.btn-load {
+  margin-bottom: 28px;
 }
 
 .hidden {
