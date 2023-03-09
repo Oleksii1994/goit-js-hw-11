@@ -1,3 +1,7 @@
+div {
+  display: block;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -71,6 +75,8 @@ b {
 }
 
 .btn-load-container {
+  padding-bottom: 28px;
+  height: 60px;
   display: flex;
   justify-content: center;
   background-color: antiquewhite;

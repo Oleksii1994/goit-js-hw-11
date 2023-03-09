@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -13,11 +12,6 @@ export const refs = {
 };
 
 const ApiService = new PicsApiService();
-// const slider = new SimpleLightbox('.gallery a', {
-//   captionDelay: 250,
-//   captionsData: 'alt',
-//   scrollZoom: false,
-// });
 
 let valueForSearch = '';
 let isPreviousWord;
@@ -28,11 +22,10 @@ refs.btnLoadMore.addEventListener('click', onLoadMore);
 async function onSubmit(event) {
   event.preventDefault();
   refs.galleryEl.classList.remove('hidden');
-  // refs.containerForLoadBtn.classList.remove('hidden');
+  refs.containerForLoadBtn.classList.remove('hidden');
   refs.btnLoadMore.classList.add('hidden');
   refs.galleryEl.innerHTML = '';
   ApiService.resetPage();
-  refs.containerForLoadBtn.classList.remove('hidden');
 
   const previousWord = event.currentTarget.elements.searchQuery.value;
 
@@ -55,11 +48,10 @@ async function onSubmit(event) {
         scrollZoom: false,
       }))
   );
-  // refs.containerForLoadBtn.classList.remove('hidden');
+
   ApiService.incrementPage();
   refs.btnLoadMore.classList.remove('hidden');
   refs.btnLoadMore.classList.add('btn');
-  // refs.btnSearch.classList.add('disabled');
 
   return (isPreviousWord = previousWord);
 }
@@ -128,9 +120,3 @@ function renderMarkup(arr) {
     .join('');
   return markup;
 }
-
-// new SimpleLightbox('.gallery__item', {
-//   captionDelay: 250,
-//   captionsData: 'alt',
-//   scrollZoom: false,
-// });
