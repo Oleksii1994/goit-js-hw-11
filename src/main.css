@@ -32,11 +32,12 @@ body {
   background-color: #0183d4a2;
 }
 .gallery {
+  background-color: antiquewhite;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16px;
 }
 
 .img {
@@ -44,6 +45,8 @@ body {
   object-fit: cover;
   width: 380px;
   height: 252px;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
 }
 
 .link-slider {
@@ -57,7 +60,7 @@ body {
   justify-content: center;
   height: auto;
   gap: 30px;
-  width: 24vw;
+  width: 380px;
   height: auto;
   box-shadow: #009fff4a;
 }
@@ -70,8 +73,53 @@ b {
 .btn-load-container {
   display: flex;
   justify-content: center;
+  background-color: antiquewhite;
 }
 
 .hidden {
   display: none;
+}
+
+.photo-card {
+  width: 380px;
+  border-radius: 4px;
+}
+
+.gallery__item {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
+  font-style: normal;
+  background-color: #f8f7f6;
+  margin-bottom: 30px;
+  text-decoration: none;
+  color: #5a6a7d;
+  border-radius: 4px;
+  box-shadow: 0px 1px 1px rgb(0 0 0 / 12%), 0px 4px 4px rgb(0 0 0 / 6%),
+    1px 4px 6px rgb(0 0 0 / 16%);
+
+  transition: all 0.3s;
+}
+
+.gallery__item:hover,
+.gallery__item:focus {
+  transform: scale(1.03);
+  cursor: pointer;
+}
+
+.disabled {
+  font-family: sans-serif;
+  background-color: #8194aa;
+  border-radius: 2px;
+  /* border: 0px; */
+  color: rgb(182, 172, 172);
+  height: 30px;
+}
+
+.disabled:hover {
+  font-family: sans-serif;
+  background-color: #8194aa;
+  border-radius: 2px;
+  /* border: 0px; */
+  color: rgb(182, 172, 172);
+  height: 30px;
 }
