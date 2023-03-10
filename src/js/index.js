@@ -27,14 +27,16 @@ async function onSubmit(event) {
   refs.galleryEl.innerHTML = '';
   ApiService.resetPage();
 
-  const previousWord = event.currentTarget.elements.searchQuery.value;
+  const previousWord = event.currentTarget.elements.searchQuery.value.trim();
 
   if (isPreviousWord === previousWord) {
     refs.btnLoadMore.classList.add('hidden');
     Notiflix.Notify.info('Enter new word to search');
-    event.currentTarget.elements.searchQuery.value = '';
+    event.currentTarget.elements.searchQuery.value.trim() = '';
     return;
   }
+
+  
   if (previousWord === '') {
     onErrorNotify();
     return;
@@ -69,6 +71,7 @@ async function onLoadMore() {
 }
 
 async function insertMarkup() {
+  
   valueForSearch = refs.formEl.elements.searchQuery.value.trim();
   refs.btnLoadMore.classList.remove('hidden');
   ApiService.searchQuery = valueForSearch;

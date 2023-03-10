@@ -1,4 +1,4 @@
-import Notiflix, { Notify } from 'notiflix';
+import Notiflix from 'notiflix';
 import axios from 'axios';
 import { refs } from '..';
 
@@ -20,6 +20,19 @@ export default class PicsApiService {
         `${BASE_URL}?key=${MY_KEY}&q=${this.searchQuery}&${OPTIONS_FOR_RESPONSE}&page=${this.page}&per_page=${this.perPage}`
       );
 
+      const totalHits = response.data.totalHits;
+      const totalPages = Math.ceil(totalHits / this.perPage);
+
+      if (this.page > totalPages) {
+        // refs.btnLoadMore.setAttribute('disabled', 'true');
+        refs.btnLoadMore.classList.add('hidden');
+        Notiflix.Notify.failure(
+          "We're sorry, but you've reached the end of search results."
+        );
+
+        return;
+      }
+
       if (response.data.total === 0) {
         refs.containerForLoadBtn.classList.add('hidden');
         refs.galleryEl.classList.add('hidden');
@@ -27,6 +40,14 @@ export default class PicsApiService {
 
         throw new Error('error');
       }
+
+      // if (this.page > totalPages) {
+      //   Notiflix.Notify.failure(
+      //     "We're sorry, but you've reached the end of search results."
+      //   );
+      //   // refs.btnLoadMore.style('display', 'none');
+      //   return;
+      // }
 
       Notiflix.Notify.success(
         `Hooray! We found ${response.data.total} images for you.`
