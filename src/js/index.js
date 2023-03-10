@@ -3,7 +3,7 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import PicsApiService from './components/axiosPics';
 
-export const refs = {
+const refs = {
   formEl: document.querySelector('.search-form'),
   galleryEl: document.querySelector('.gallery'),
   btnSearch: document.querySelector('[type="submit"]'),
@@ -21,8 +21,14 @@ refs.btnLoadMore.addEventListener('click', onLoadMore);
 
 async function onSubmit(event) {
   event.preventDefault();
-  refs.galleryEl.classList.remove('hidden');
-  refs.containerForLoadBtn.classList.remove('hidden');
+  valueForSearch = refs.formEl.elements.searchQuery.value.trim();
+
+  if (valueForSearch === '') {
+    onErrorNotify();
+    return;
+  }
+
+  refs.containerForLoadBtn.classList.add('hidden');
   refs.btnLoadMore.classList.add('hidden');
   refs.galleryEl.innerHTML = '';
   ApiService.resetPage();
@@ -30,28 +36,25 @@ async function onSubmit(event) {
   const previousWord = event.currentTarget.elements.searchQuery.value.trim();
 
   if (isPreviousWord === previousWord) {
-    refs.btnLoadMore.classList.add('hidden');
     Notiflix.Notify.info('Enter new word to search');
-    event.currentTarget.elements.searchQuery.value.trim() = '';
     return;
   }
 
-  
-  if (previousWord === '') {
-    onErrorNotify();
+  await insertMarkup();
+  if (ApiService.arrRespLength === 0) {
+    Notiflix.Notify.failure('Try to Enter another word');
+    return;
+  }
+  if (ApiService.respDataTotal !== 0) {
+    Notiflix.Notify.success(
+      `Hooray! We found ${ApiService.respDataTotal} images for you.`
+    );
+  }
+  if (ApiService.totalPages === 1) {
     return;
   }
 
-  await insertMarkup().then(
-    slider =>
-      (slider = new SimpleLightbox('.gallery a', {
-        captionDelay: 250,
-        captionsData: 'alt',
-        scrollZoom: false,
-      }))
-  );
-
-  ApiService.incrementPage();
+  refs.containerForLoadBtn.classList.remove('hidden');
   refs.btnLoadMore.classList.remove('hidden');
   refs.btnLoadMore.classList.add('btn');
 
@@ -60,19 +63,27 @@ async function onSubmit(event) {
 
 async function onLoadMore() {
   ApiService.incrementPage();
-  await insertMarkup().then(
-    slider =>
-      (slider = new SimpleLightbox('.gallery a', {
-        captionDelay: 250,
-        captionsData: 'alt',
-        scrollZoom: false,
-      }))
-  );
+
+  await insertMarkup();
+  //   .then(
+  //   slider =>
+  //     (slider = new SimpleLightbox('.gallery a', {
+  //       captionDelay: 250,
+  //       captionsData: 'alt',
+  //       scrollZoom: false,
+  //     }))
+  // );
+
+  if (ApiService.page === ApiService.totalPages) {
+    refs.btnLoadMore.classList.add('hidden');
+    Notiflix.Notify.info('Your search result comes to an end:((');
+    return;
+  }
 }
 
 async function insertMarkup() {
-  
   valueForSearch = refs.formEl.elements.searchQuery.value.trim();
+
   refs.btnLoadMore.classList.remove('hidden');
   ApiService.searchQuery = valueForSearch;
   refs.galleryEl.insertAdjacentHTML(
@@ -88,9 +99,6 @@ function onErrorNotify() {
 }
 
 function renderMarkup(arr) {
-  if (arr === undefined) {
-    return;
-  }
   const markup = arr
     .map(
       ({

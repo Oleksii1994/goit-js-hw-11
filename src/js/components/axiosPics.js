@@ -1,6 +1,5 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
-import { refs } from '..';
 
 const MY_KEY = '34183699-29109d6fbf2dd60241f6d6e15';
 const BASE_URL = 'https://pixabay.com/api/';
@@ -9,9 +8,13 @@ const OPTIONS_FOR_RESPONSE =
 
 export default class PicsApiService {
   constructor() {
+    this.arrRespLength = 0;
+    this.totalHits = 1;
+    this.totalPages = 1;
     this.searchQuery = '';
     this.page = 1;
     this.perPage = 40;
+    this.respDataTotal = 0;
   }
 
   async fetchPics() {
@@ -19,35 +22,11 @@ export default class PicsApiService {
       const response = await axios.get(
         `${BASE_URL}?key=${MY_KEY}&q=${this.searchQuery}&${OPTIONS_FOR_RESPONSE}&page=${this.page}&per_page=${this.perPage}`
       );
+      this.arrRespLength = response.data.hits.length;
+      this.totalHits = response.data.totalHits;
+      this.totalPages = Math.ceil(this.totalHits / this.perPage);
+      this.respDataTotal = response.data.total;
 
-      const totalHits = response.data.totalHits;
-      const totalPages = Math.ceil(totalHits / this.perPage);
-
-      if (this.page > totalPages) {
-        // refs.btnLoadMore.setAttribute('disabled', 'true');
-        refs.btnLoadMore.classList.add('hidden');
-        Notiflix.Notify.failure(
-          "We're sorry, but you've reached the end of search results."
-        );
-
-        return;
-      }
-
-      if (response.data.total === 0) {
-        refs.containerForLoadBtn.classList.add('hidden');
-        refs.galleryEl.classList.add('hidden');
-        refs.galleryEl.textContent = '';
-
-        throw new Error('error');
-      }
-
-      if (response.data.total !== 0) {
-        Notiflix.Notify.success(
-          `Hooray! We found ${response.data.total} images for you.`
-        );
-      }
-
-      console.log(response.data.hits.length);
       return response.data.hits;
     } catch (e) {
       Notiflix.Notify.failure(
