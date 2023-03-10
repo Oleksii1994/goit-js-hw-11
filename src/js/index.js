@@ -11,6 +11,12 @@ const refs = {
   containerForLoadBtn: document.querySelector('.btn-load-container'),
 };
 
+const slider = new SimpleLightbox('.gallery a', {
+  captionDelay: 250,
+  captionsData: 'alt',
+  scrollZoom: false,
+});
+
 const ApiService = new PicsApiService();
 
 let valueForSearch = '';
@@ -90,6 +96,7 @@ async function insertMarkup() {
     'beforeend',
     renderMarkup(await ApiService.fetchPics())
   );
+  slider.refresh();
 }
 
 function onErrorNotify() {
