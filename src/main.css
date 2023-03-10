@@ -79,7 +79,7 @@ b {
 .btn-load-container {
   display: flex;
   justify-content: center;
-  background-color: antiquewhite;
+  background: linear-gradient(to right, #fceabb, #f8b500);
 }
 
 .btn-load {
