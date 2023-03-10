@@ -41,17 +41,11 @@ export default class PicsApiService {
         throw new Error('error');
       }
 
-      // if (this.page > totalPages) {
-      //   Notiflix.Notify.failure(
-      //     "We're sorry, but you've reached the end of search results."
-      //   );
-      //   // refs.btnLoadMore.style('display', 'none');
-      //   return;
-      // }
-
-      Notiflix.Notify.success(
-        `Hooray! We found ${response.data.total} images for you.`
-      );
+      if (response.data.total !== 0) {
+        Notiflix.Notify.success(
+          `Hooray! We found ${response.data.total} images for you.`
+        );
+      }
 
       console.log(response.data.hits.length);
       return response.data.hits;
