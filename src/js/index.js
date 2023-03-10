@@ -69,16 +69,7 @@ async function onSubmit(event) {
 
 async function onLoadMore() {
   ApiService.incrementPage();
-
   await insertMarkup();
-  //   .then(
-  //   slider =>
-  //     (slider = new SimpleLightbox('.gallery a', {
-  //       captionDelay: 250,
-  //       captionsData: 'alt',
-  //       scrollZoom: false,
-  //     }))
-  // );
 
   if (ApiService.page === ApiService.totalPages) {
     refs.btnLoadMore.classList.add('hidden');
@@ -89,9 +80,9 @@ async function onLoadMore() {
 
 async function insertMarkup() {
   valueForSearch = refs.formEl.elements.searchQuery.value.trim();
+  ApiService.searchQuery = valueForSearch;
 
   refs.btnLoadMore.classList.remove('hidden');
-  ApiService.searchQuery = valueForSearch;
   refs.galleryEl.insertAdjacentHTML(
     'beforeend',
     renderMarkup(await ApiService.fetchPics())
