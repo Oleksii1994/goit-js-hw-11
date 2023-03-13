@@ -9,6 +9,8 @@ const refs = {
   btnSearch: document.querySelector('[type="submit"]'),
   btnLoadMore: document.querySelector('[data-action="load-more"]'),
   containerForLoadBtn: document.querySelector('.btn-load-container'),
+  btnDown: document.querySelector('.btn-down'),
+  btnUp: document.querySelector('.btn-up'),
 };
 
 const slider = new SimpleLightbox('.gallery a', {
@@ -24,6 +26,8 @@ let isPreviousWord;
 
 refs.formEl.addEventListener('submit', onSubmit);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
+refs.btnDown.addEventListener('click', scrollDownBtn);
+refs.btnUp.addEventListener('click', scrollUpBtn);
 
 async function onSubmit(event) {
   event.preventDefault();
@@ -34,8 +38,7 @@ async function onSubmit(event) {
     return;
   }
 
-  refs.containerForLoadBtn.classList.add('hidden');
-  refs.btnLoadMore.classList.add('hidden');
+  addClassHidden();
   refs.galleryEl.innerHTML = '';
   ApiService.resetPage();
 
@@ -60,8 +63,7 @@ async function onSubmit(event) {
     return;
   }
 
-  refs.containerForLoadBtn.classList.remove('hidden');
-  refs.btnLoadMore.classList.remove('hidden');
+  removeClassHidden();
   refs.btnLoadMore.classList.add('btn');
 
   return (isPreviousWord = previousWord);
@@ -108,7 +110,7 @@ function renderMarkup(arr) {
         comments,
         downloads,
       }) =>
-        `<a class="gallery__item" href='${largeImageURL}'><div class="photo-card">
+        `<a class="gallery__item pagination__next" href='${largeImageURL}'><div class="photo-card">
         <img src="${webformatURL}" alt="${tags}" loading="lazy" class='img'/>
         <div class="info">
           <p class="info-item">
@@ -128,4 +130,40 @@ function renderMarkup(arr) {
     )
     .join('');
   return markup;
+}
+
+function scrollDownBtn() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
+}
+
+function scrollUpBtn() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+}
+
+function removeClassHidden() {
+  refs.btnUp.classList.remove('hidden');
+  refs.btnDown.classList.remove('hidden');
+  refs.containerForLoadBtn.classList.remove('hidden');
+  refs.btnLoadMore.classList.remove('hidden');
+}
+
+function addClassHidden() {
+  refs.btnUp.classList.remove('hidden');
+  refs.btnDown.classList.add('hidden');
+  refs.containerForLoadBtn.classList.add('hidden');
+  refs.btnLoadMore.classList.add('hidden');
 }
