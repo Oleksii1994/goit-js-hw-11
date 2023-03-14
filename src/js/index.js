@@ -161,10 +161,6 @@ function scrollDownBtn() {
 }
 
 function scrollUpBtn() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
-
   window.scrollTo({
     top: 0,
     behavior: 'smooth',
@@ -187,10 +183,7 @@ function addClassHidden() {
 
 function arrfetchImages() {
   setTimeout(() => {
-    const totalHit = ApiService.totalHits;
-    console.log(totalHit);
-
-    const totalPages = Math.ceil(totalHit / ApiService.perPage);
+    const totalPages = Math.ceil(ApiService.totalHits / ApiService.perPage);
 
     if (ApiService.page > totalPages) {
       Notiflix.Notify.failure(
@@ -199,5 +192,5 @@ function arrfetchImages() {
       observer.unobserve(refs.sentinel);
       return;
     }
-  }, 1000);
+  }, 500);
 }
