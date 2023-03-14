@@ -11,8 +11,22 @@ const refs = {
   containerForLoadBtn: document.querySelector('.btn-load-container'),
   btnDown: document.querySelector('.btn-down'),
   btnUp: document.querySelector('.btn-up'),
+  sentinel: document.querySelector('#sentinel'),
 };
 
+const onEntry = entries => {
+  entries.forEach(entrie => {
+    if (entrie.isIntersecting && ApiService.query !== '') {
+      arrfetchImages();
+      onLoadMore();
+    }
+  });
+};
+const options = {
+  rootMargin: '150px',
+};
+
+const observer = new IntersectionObserver(onEntry, options);
 const slider = new SimpleLightbox('.gallery a', {
   captionDelay: 250,
   captionsData: 'alt',
@@ -31,6 +45,7 @@ refs.btnUp.addEventListener('click', scrollUpBtn);
 
 async function onSubmit(event) {
   event.preventDefault();
+  observer.unobserve(refs.sentinel);
   valueForSearch = refs.formEl.elements.searchQuery.value.trim();
 
   if (valueForSearch === '') {
@@ -63,6 +78,7 @@ async function onSubmit(event) {
     return;
   }
 
+  observer.observe(refs.sentinel);
   removeClassHidden();
   refs.btnLoadMore.classList.add('btn');
 
@@ -76,6 +92,7 @@ async function onLoadMore() {
   if (ApiService.page === ApiService.totalPages) {
     refs.btnLoadMore.classList.add('hidden');
     Notiflix.Notify.info('Your search result comes to an end:((');
+    observer.unobserve(refs.sentinel);
     return;
   }
 }
@@ -166,4 +183,21 @@ function addClassHidden() {
   refs.btnDown.classList.add('hidden');
   refs.containerForLoadBtn.classList.add('hidden');
   refs.btnLoadMore.classList.add('hidden');
+}
+
+function arrfetchImages() {
+  setTimeout(() => {
+    const totalHit = ApiService.totalHits;
+    console.log(totalHit);
+
+    const totalPages = Math.ceil(totalHit / ApiService.perPage);
+
+    if (ApiService.page > totalPages) {
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
+      observer.unobserve(refs.sentinel);
+      return;
+    }
+  }, 1000);
 }
