@@ -2,6 +2,8 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import PicsApiService from './components/axiosPics';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const refs = {
   formEl: document.querySelector('.search-form'),
@@ -13,6 +15,8 @@ const refs = {
   btnUp: document.querySelector('.btn-up'),
   sentinel: document.querySelector('#sentinel'),
 };
+
+AOS.init();
 
 const onEntry = entries => {
   entries.forEach(entrie => {
@@ -127,7 +131,9 @@ function renderMarkup(arr) {
         comments,
         downloads,
       }) =>
-        `<a class="gallery__item pagination__next" href='${largeImageURL}'><div class="photo-card">
+        `<div data-aos="fade-up"
+     data-aos-duration="1000">
+<a class="gallery__item pagination__next" href='${largeImageURL}'><div class="photo-card">
         <img src="${webformatURL}" alt="${tags}" loading="lazy" class='img'/>
         <div class="info">
           <p class="info-item">
@@ -143,7 +149,7 @@ function renderMarkup(arr) {
             <b>Downloads<br>${downloads}</br></b>
           </p>
         </div>
-      </div></a>`
+      </div></a></div>`
     )
     .join('');
   return markup;
